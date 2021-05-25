@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>jp.te4a.spring.boot</groupId>
-  <artifactId>mybootapp6</artifactId>
+  <artifactId>mybootapp7</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>mybootapp6</name>
+  <name>mybootapp7</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -30,14 +30,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
       <version>2.4.5</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.apache.tomcat.embed</groupId>
-      <artifactId>tomcat-embed-jasper</artifactId>
-      <version>10.0.6</version>
-      <scope>provided</scope>
     </dependency>
 
 
