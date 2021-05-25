@@ -5,21 +5,8 @@
     <title>書籍一覧画面</title>
 </head>
 <body>
-    <table>
-        <tr th:each="book:${books}">
-            <td th:test="${book.id}">100</td>
-            <td th:test="${book.title}">タイトルA</td>
-            <td th:test="${book.writter}">著者A</td>
-            <td th:test="${book.publisher}">出版社A</td>
-            <td th:test="${book.price}">100</td>
-        </tr>
-    </table>
-    <form method="post" th:action="@{/book/post}">
+    <form method="post" th:action="@{/books/create}">
         <table>
-            <tr>
-                <td>ID:</td>
-                <td><input type="text" name="id" /></td>
-            </tr>
             <tr>
                 <td>タイトル:</td>
                 <td>
@@ -43,5 +30,26 @@
         </table>
         <input type="submit" />
     </form>
+    <table>
+        <tr th:each="book:${books}">
+            <td th:text="${book.id}">100</td>
+            <td th:text="${book.title}">タイトルA</td>
+            <td th:text="${book.writter}">著者A</td>
+            <td th:text="${book.publisher}">出版社A</td>
+            <td th:text="${book.price}">100</td>
+            <td>
+                <form th:action="@{/books/edit}" method="post">
+                    <input type="submit" name="form" value="編集" />
+                    <input type="hidden" name="id" th:value="${book.id}"/>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/books/delete}" method="post">
+                    <input type="submit" name="form" value="削除" />
+                    <input type="hidden" name="id" th:value="${book.id}"/>
+                </form>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
