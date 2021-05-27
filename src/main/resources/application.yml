@@ -1,1 +1,7 @@
 spring.thymeleaf.mode: HTML
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/mysql
+    username: webappuser
+    password: cE%4U_*y
+    driverClassName: org.mariadb.jdbc.Driver
