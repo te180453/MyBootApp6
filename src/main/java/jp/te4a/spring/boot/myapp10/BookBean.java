@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class BookBean{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     @Column(nullable = false)
     String title;
