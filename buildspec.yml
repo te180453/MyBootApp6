@@ -17,3 +17,5 @@ artifacts:
     - target/mybootapp7-1.0-SNAPSHOT.jar
     - appspec.yml
   discard-paths: yes
+
+  
