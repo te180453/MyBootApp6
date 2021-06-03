@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp12;
+package jp.te4a.spring.boot.myapp13.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,9 @@ import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.stereotype.Repository;
+
+import jp.te4a.spring.boot.myapp13.bean.BookBean;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
