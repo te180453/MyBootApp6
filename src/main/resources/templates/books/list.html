@@ -20,7 +20,7 @@
             <tr>
                 <td>著者：</td>
                 <td>
-                    <input type=" text" name="writter" th:field="*{writter}" th:errorclass="error-input" />
+                    <input type="text" name="writter" th:field="*{writter}" th:errorclass="error-input" />
                     <span th:if="${#fields.hasErrors('writter')}" th:errors="*{writter}" class="error-messages">error!</span>
                 </td>
             </tr>

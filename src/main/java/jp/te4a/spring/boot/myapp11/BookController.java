@@ -33,7 +33,6 @@ public class BookController {
 
     @PostMapping(path = "create")
     String create(@Validated BookForm form, BindingResult result, Model model) {
-        System.out.println(form);
         if(result.hasErrors()){
             return list(model);
         }

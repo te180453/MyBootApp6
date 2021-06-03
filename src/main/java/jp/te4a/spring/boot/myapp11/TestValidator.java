@@ -10,10 +10,10 @@ public class TestValidator implements ConstraintValidator<TestValid,String>{
     }
     @Override
     public boolean isValid(String in,ConstraintValidatorContext cxt){
+        System.out.println(in);
         if( in == null ){
             return false;
         }
-        System.out.println( in.equals(param) );
         return !in.equals(param);
     }
 }
