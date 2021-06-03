@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8" />
     <title>書籍一覧画面</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.0.1/css/bootstrap.min.css}" />
     <link rel=“stylesheet” type=“text/css”href="../../static/css/style.css" th:href="@{/css/style.css}" />
 </head>
 
 <body>
     <form method="post" th:action="@{/books/create}" th:object="${bookForm}">
-        <table>
+        <table class="table table-striped talbe-bordered table-condensed">
             <tr>
                 <td>タイトル:</td>
                 <td>
