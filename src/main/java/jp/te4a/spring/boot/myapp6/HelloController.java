@@ -25,7 +25,8 @@ public class HelloController {
         @RequestParam("title") String title,
         @RequestParam("writter") String writter,
         @RequestParam("publisher") String publisher,
-        @RequestParam("price") String price) {
+        @RequestParam("price") String price
+        ) {
         ModelAndView mv = new ModelAndView("index");
         bookService.save(new BookBean(Integer.valueOf(id), title, writter, publisher, Integer.valueOf(price)));
         StringBuffer buff = new StringBuffer();
