@@ -20,3 +20,12 @@ public class BookBean{
     String publisher;
     Integer price;
 }
+/*
+MySQLを使った場合
+strategy = GenerationType.AUTO Table 'spdb.hibernate_sequence' doesn't exist
+strategy = GenerationType.IDENTITY 問題なし
+strategy = GenerationType.SEQUENCE Table 'spdb.hibernate_sequence' doesn't exist
+strategy = GenerationType.TABLE Table 'spdb.hibernate_sequences' doesn't exist
+
+@TableGenerator( name = "hibernate_sequence", table = "hibernate_sequence", pkColumnName = "seq_name", pkColumnValue = "id_seq", valueColumnName = "seq_value", initialValue = 1, allocationSize = 1 )
+*/
