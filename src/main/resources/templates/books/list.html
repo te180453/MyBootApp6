@@ -9,6 +9,12 @@
 </head>
 
 <body>
+    <p>
+        <span id="dispUserName"></span> さんログイン中。
+    </p>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" class="btnbtn-default btn-xs" value="ログアウト" />
+    </form>
     <form method="post" th:action="@{/books/create}" th:object="${bookForm}">
         <table class="table table-striped talbe-bordered table-condensed">
             <tr>
@@ -63,6 +69,12 @@
             </td>
         </tr>
     </table>
+    <script>
+        window.onload = () => {
+            const dispName = document.getElementById("dispUserName");
+            dispName.innerText = localStorage.getItem("user_name");
+        }
+    </script>
 </body>
 
 </html>

@@ -11,13 +11,20 @@
 <body>
     <div class="container">
         <h1>書籍管理システム</h1>
-        <form class="form-signin" method="post" th:action="@{/login}">
+        <form class="form-signin" method="post" th:action="@{/login}" id="loginForm" name="loginForm">
             <h2 class="form-signin-heading">ログインフォーム</h2>
             <div th:if="${param.error}" class="alert alert-danger">ユーザー名またはパスワードが正しくありません。</div>
             <input type="text" class="form-control" name="username" placeholder="Username" required="required" autofocus="autofocus" />
             <input type="password" class="form-control" name="password" placeholder="Password" required="required" />
             <button class="btnbtn-lgbtn-primary btn-block" type="submit">Sign in</button></form>
     </div>
+    <script>
+        const loginForm = document.getElementById("loginForm");
+        loginForm.addEventListener("submit", () => {
+            localStorage.setItem("user_name", document.getElementsByName("username")[0].value);
+            document.loginForm.submit();
+        });
+    </script>
 </body>
 
 </html>
