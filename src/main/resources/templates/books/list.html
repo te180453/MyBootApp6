@@ -10,7 +10,7 @@
 
 <body>
     <p>
-        <span id="dispUserName"></span> さんログイン中。
+        <span id="dispUserName" sec:authentication="principal.username"> </span> さんログイン中。
     </p>
     <form th:action="@{/logout}" method="post">
         <input type="submit" class="btnbtn-default btn-xs" value="ログアウト" />
@@ -69,12 +69,6 @@
             </td>
         </tr>
     </table>
-    <script>
-        window.onload = () => {
-            const dispName = document.getElementById("dispUserName");
-            dispName.innerText = localStorage.getItem("user_name");
-        }
-    </script>
 </body>
 
 </html>
