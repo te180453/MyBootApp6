@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot;
+package jp.te4a.spring.boot.myapp6;
 
 import static org.junit.Assert.assertTrue;
 

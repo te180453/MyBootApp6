@@ -30,9 +30,9 @@ public class HelloController {
         ModelAndView mv = new ModelAndView("index");
         bookService.save(new BookBean(Integer.valueOf(id), title, writter, publisher, Integer.valueOf(price)));
         StringBuffer buff = new StringBuffer();
-        buff.append("<HR>");
+        buff.append("<hr>");
         for(BookBean bean:bookService.findAll()) {
-            buff.append("ID:" + bean.getId() + "<BR>" + "タイトル:"+ bean.getTitle() + "<BR>"+ "著者:"+ bean.getWritter() + "<BR>" + "出版社:"+ bean.getPublisher() + "<BR>"+ "価格:"+ bean.getPrice() + "<BR><HR>");
+            buff.append("ID:" + bean.getId() + "<br>" + "タイトル:"+ bean.getTitle() + "<br>"+ "著者:"+ bean.getWritter() + "<br>" + "出版社:"+ bean.getPublisher() + "<br>"+ "価格:"+ bean.getPrice() + "<br><hr>");
         }
         mv.addObject("msg", buff.toString());
         return mv;
