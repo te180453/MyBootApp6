@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html xmlns="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title>書籍一覧画面</title>
 </head>
+
 <body>
     <table>
         <tr th:each="book:${books}">
-            <td th:text="${book.id}">100</td>
-            <td th:text="${book.title}">タイトルA</td>
-            <td th:text="${book.writter}">著者A</td>
-            <td th:text="${book.publisher}">出版社A</td>
-            <td th:text="${book.price}">100</td>
+            <td th:text="${book.id}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.writter}"></td>
+            <td th:text="${book.publisher}"></td>
+            <td th:text="${book.price}"></td>
         </tr>
     </table>
-    <form method="post" th:action="@{/book/post}">
+    <form method="post" th:action="@{/books/list}">
         <table>
             <tr>
                 <td>ID:</td>
@@ -44,4 +46,5 @@
         <input type="submit" />
     </form>
 </body>
+
 </html>

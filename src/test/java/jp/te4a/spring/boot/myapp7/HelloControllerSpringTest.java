@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp6;
+package jp.te4a.spring.boot.myapp7;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,7 +30,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-
 //SpringBootの起動クラスを指定
 @ContextConfiguration(classes = App.class)
 //クラス内の全メソッドにおいて、実行前にDIコンテナの中身を破棄する設定
@@ -56,11 +55,9 @@ public class HelloControllerSpringTest {
 
     @Test
     public void indexにアクセス() throws Exception{
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/books/list"))
         .andExpect(status().is2xxSuccessful())
-        .andExpect(view().name("index"))
-        .andExpect(model().attributeExists("msg"))
-        .andExpect(model().attribute("msg", "this is setting message"))
+        .andExpect(view().name("books/list"))
         .andReturn();
     }
 
@@ -163,27 +160,38 @@ public class HelloControllerSpringTest {
         params.add("publisher", "testPublisher");
         params.add("price", "114");
 
+        BookBean bb = new BookBean(
+            Integer.parseInt(params.get("id").get(0)), 
+            params.get("title").get(0), 
+            params.get("writter").get(0), 
+            params.get("publisher").get(0), 
+            Integer.parseInt(params.get("price").get(0))
+            );
+        List<BookBean> bbList = new ArrayList<BookBean>();
+        bbList.add(bb);
         mockMvc.perform(
-            post("/post").
+            post("/books/list").
             params(params)
             )
             .andExpect(status().isOk())
-            .andExpect(model().attributeExists("msg"))
-            .andExpect(
-                model().attribute(
-                    "msg", 
-                    String.format(
-                        "<hr>ID:%s<br>タイトル:%s<br>著者:%s<br>出版社:%s<br>価格:%s<br><hr>",
-                        params.get("id").get(0),
-                        params.get("title").get(0),
-                        params.get("writter").get(0),
-                        params.get("publisher").get(0),
-                        params.get("price").get(0)
-                    ) 
-                    ))
-            .andExpect(view().name("index"))
+            .andExpect(view().name("books/list"))
+            .andExpect(model().attributeExists("books"))
+            .andExpect(model().attribute("books", bbList))
+            .andExpect(view().name("books/list"))
             .andExpect(content().string(containsString(
-                String.format("this is sample page for Spring Boot!") 
+                params.get("id").get(0)
+                )))
+            .andExpect(content().string(containsString(
+                params.get("title").get(0)
+                )))
+            .andExpect(content().string(containsString(
+                params.get("writter").get(0)
+                )))
+            .andExpect(content().string(containsString(
+                params.get("publisher").get(0)
+                )))
+            .andExpect(content().string(containsString(
+                params.get("price").get(0)
                 )))
             .andReturn();
     }

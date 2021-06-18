@@ -23,11 +23,11 @@ public class HelloController {
     public ModelAndView postForm(
         @RequestParam("id") String id,
         @RequestParam("title") String title,
-        @RequestParam("witter") String writter,
+        @RequestParam("writter") String writter,
         @RequestParam("publisher") String publisher,
         @RequestParam("price") String price
     ){
-        ModelAndView mv = new ModelAndView("book/list");
+        ModelAndView mv = new ModelAndView("books/list");
         bookService.save(new BookBean(
             Integer.valueOf(id), title, writter, publisher, Integer.valueOf(price)
             ));
