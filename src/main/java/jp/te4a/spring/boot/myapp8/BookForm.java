@@ -1,6 +1,5 @@
 package jp.te4a.spring.boot.myapp8;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data
