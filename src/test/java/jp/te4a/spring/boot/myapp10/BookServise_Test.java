@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp9;
+package jp.te4a.spring.boot.myapp10;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -11,9 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import jp.te4a.spring.boot.myapp9.Mocks.BookBeanMock;
-import jp.te4a.spring.boot.myapp9.Mocks.BookFormMock;
-import jp.te4a.spring.boot.myapp9.Mocks.BookRepositoryMock;
+import jp.te4a.spring.boot.myapp10.Mocks.BookBeanMock;
+import jp.te4a.spring.boot.myapp10.Mocks.BookFormMock;
+import jp.te4a.spring.boot.myapp10.Mocks.BookRepositoryMock;
 
 //BookServise_Testの実装
 public class BookServise_Test{

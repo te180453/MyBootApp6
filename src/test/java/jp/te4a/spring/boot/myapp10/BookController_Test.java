@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp9;
+package jp.te4a.spring.boot.myapp10;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,10 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import jp.te4a.spring.boot.myapp9.Mocks.BookBeanMock;
-import jp.te4a.spring.boot.myapp9.Mocks.BookFormMock;
-import jp.te4a.spring.boot.myapp9.Mocks.BookServiceMock;
-import jp.te4a.spring.boot.myapp9.impls.TestModel;
+import jp.te4a.spring.boot.myapp10.Mocks.BookBeanMock;
+import jp.te4a.spring.boot.myapp10.Mocks.BookFormMock;
+import jp.te4a.spring.boot.myapp10.Mocks.BookServiceMock;
+import jp.te4a.spring.boot.myapp10.impls.TestModel;
 
 public class BookController_Test {
 

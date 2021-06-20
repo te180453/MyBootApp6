@@ -1,8 +1,8 @@
-package jp.te4a.spring.boot.myapp9.Mocks;
+package jp.te4a.spring.boot.myapp10.Mocks;
 
 import static org.mockito.Mockito.*;
 
-import jp.te4a.spring.boot.myapp9.BookBean;
+import jp.te4a.spring.boot.myapp10.BookBean;
 
 public final class BookBeanMock {
 

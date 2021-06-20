@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp9;
+package jp.te4a.spring.boot.myapp10;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,7 +40,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import jp.te4a.spring.boot.myapp9.impls.ParamsMultiValueMap;
+import jp.te4a.spring.boot.myapp10.impls.ParamsMultiValueMap;
 
 //SpringBootの起動クラスを指定
 @ContextConfiguration(classes = MyBookApp7Application.class)
