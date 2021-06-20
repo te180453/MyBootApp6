@@ -1,8 +1,10 @@
-package jp.te4a.spring.boot.myapp12;
+package jp.te4a.spring.boot.myapp13;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+
+import jp.te4a.spring.boot.myapp13.bean.BookBean;
 
 public class BookBean_Test {
 

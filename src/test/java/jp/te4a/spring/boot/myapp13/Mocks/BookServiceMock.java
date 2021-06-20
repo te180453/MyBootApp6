@@ -1,13 +1,13 @@
-package jp.te4a.spring.boot.myapp12.Mocks;
+package jp.te4a.spring.boot.myapp13.Mocks;
 
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.te4a.spring.boot.myapp12.BookBean;
-import jp.te4a.spring.boot.myapp12.BookForm;
-import jp.te4a.spring.boot.myapp12.BookServise;
+import jp.te4a.spring.boot.myapp13.bean.BookBean;
+import jp.te4a.spring.boot.myapp13.form.BookForm;
+import jp.te4a.spring.boot.myapp13.service.BookServise;
 
 public class BookServiceMock {
     public static BookServise create(BookServise bs){

@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp12.Mocks;
+package jp.te4a.spring.boot.myapp13.Mocks;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ConcurrentMap;
 
-import jp.te4a.spring.boot.myapp12.BookBean;
+import jp.te4a.spring.boot.myapp13.bean.BookBean;
 
 public class BookMapMock {
 

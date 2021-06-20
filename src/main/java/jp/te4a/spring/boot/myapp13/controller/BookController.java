@@ -24,17 +24,20 @@ public class BookController {
     BookServise bookService;
 
     @ModelAttribute
+    public
     BookForm setUpForm() {
         return new BookForm();
     }
 
     @GetMapping
+    public
     String list(Model model) {
         model.addAttribute("books", bookService.findAll());
         return "books/list";
     }
 
     @PostMapping(path = "create")
+    public
     String create(@Validated BookForm form, BindingResult result, Model model) {
         if(result.hasErrors()){
             return list(model);
@@ -44,6 +47,7 @@ public class BookController {
     }
 
     @PostMapping(path = "edit", params = "form")
+    public
     String editForm(@RequestParam Integer id, BookForm form) {
         BookForm bookForm = bookService.findOne(id);
         BeanUtils.copyProperties(bookForm, form);
@@ -51,6 +55,7 @@ public class BookController {
     }
 
     @PostMapping(path = "edit")
+    public
     String edit(@RequestParam Integer id, @Validated BookForm form,BindingResult result) {
         if(result.hasErrors()){
             return editForm(id, form);
@@ -60,12 +65,14 @@ public class BookController {
     }
 
     @PostMapping(path = "delete")
+    public
     String delete(@RequestParam Integer id) {
         bookService.delete(id);
         return "redirect:/books";
     }
 
     @PostMapping(path = "edit", params = "goToTop")
+    public
     String goToTop() {
         return "redirect:/books";
     }

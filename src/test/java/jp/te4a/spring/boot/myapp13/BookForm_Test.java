@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp12;
+package jp.te4a.spring.boot.myapp13;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,6 +13,8 @@ import javax.validation.ValidatorFactory;
 
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
+
+import jp.te4a.spring.boot.myapp13.form.BookForm;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;

@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp12;
+package jp.te4a.spring.boot.myapp13;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,8 +41,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.security.test.context.support.WithUserDetails;
 
-import jp.te4a.spring.boot.myapp12.impls.ParamsMultiValueMap;
+import jp.te4a.spring.boot.myapp13.impls.ParamsMultiValueMap;
 
 //SpringBootの起動クラスを指定
 @ContextConfiguration(classes = MyBookApp7Application.class)
@@ -56,8 +57,8 @@ import jp.te4a.spring.boot.myapp12.impls.ParamsMultiValueMap;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //クラス単位でインスタンスを作成
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-
-
+// 認証用ユーザー指定
+@WithUserDetails(value="testuser", userDetailsServiceBeanName="loginUserDetailsService")
 // BookControllerSpringTestの実装
 public class BookControllerSpringTest {
     @Autowired
