@@ -1,6 +1,7 @@
-package jp.te4a.spring.boot.myapp10;
+package jp.te4a.spring.boot.myapp11;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,13 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.validation.BindingResult;
 
-import jp.te4a.spring.boot.myapp10.Mocks.BookBeanMock;
-import jp.te4a.spring.boot.myapp10.Mocks.BookFormMock;
-import jp.te4a.spring.boot.myapp10.Mocks.BookServiceMock;
-import jp.te4a.spring.boot.myapp10.impls.TestModel;
+import jp.te4a.spring.boot.myapp11.Mocks.BindingResultMock;
+import jp.te4a.spring.boot.myapp11.Mocks.BookBeanMock;
+import jp.te4a.spring.boot.myapp11.Mocks.BookFormMock;
+import jp.te4a.spring.boot.myapp11.Mocks.BookServiceMock;
+import jp.te4a.spring.boot.myapp11.impls.TestModel;
 
 public class BookController_Test {
+
+    @Mock
+    private static BindingResult br;
 
     @Mock
     private static BookForm bf;
@@ -35,6 +41,7 @@ public class BookController_Test {
         BookBeanMock.create(bb);
         BookFormMock.create(bf);
         BookServiceMock.create(bs);
+        BindingResultMock.create(br);
     }
 
     @Test
@@ -53,7 +60,7 @@ public class BookController_Test {
 
     @Test
     public void createにアクセス_redirect_booksが返る() {
-        String actual = bc.create(bf, new TestModel());
+        String actual = bc.create(bf, br, new TestModel());
         String expected = "redirect:/books";
         assertEquals(expected, actual);
     }
@@ -68,7 +75,7 @@ public class BookController_Test {
     @Test
     public void editにアクセス_文字列books_booksが返る() {
         String expected = "redirect:/books";
-        String actual = bc.edit(1, bf);
+        String actual = bc.edit(1, bf, br);
         assertEquals(expected, actual);
     }
 

@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp10;
+package jp.te4a.spring.boot.myapp11;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,6 +32,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -40,7 +42,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import jp.te4a.spring.boot.myapp10.impls.ParamsMultiValueMap;
+import jp.te4a.spring.boot.myapp11.impls.ParamsMultiValueMap;
 
 //SpringBootの起動クラスを指定
 @ContextConfiguration(classes = MyBookApp7Application.class)
@@ -54,6 +56,7 @@ import jp.te4a.spring.boot.myapp10.impls.ParamsMultiValueMap;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //クラス単位でインスタンスを作成
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 
 // BookControllerSpringTestの実装
 public class BookControllerSpringTest {
@@ -73,6 +76,8 @@ public class BookControllerSpringTest {
     public final static Object[] values1 = {1, "タイトル１", "著者１", "出版社１", 100};
 
     public final static Object[] values2 = {2, "タイトル2", "著者2", "出版社2", 200};
+
+    public final static Object[] errorValues2 = {3, "タ", "著", "", -1};
 
     public static final Operation insertData1 
         = Operations.insertInto("books")
@@ -109,9 +114,9 @@ public class BookControllerSpringTest {
         .andReturn();
     }
 
-    // TODO books/createにpost
+    // TODO books/createにpost_正常値
     @Test
-    public void  booksCreateにpostする() throws Exception{
+    public void  booksCreateにpostする正常値() throws Exception{
         MultiValueMap<String,String> params = new ParamsMultiValueMap();
 
         params.add("id", "1");
@@ -126,6 +131,33 @@ public class BookControllerSpringTest {
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/books"))
+            .andReturn();
+    }
+
+    // TODO books/createにpost_異常値
+    @Test
+    public void  booksCreateにpostする異常値() throws Exception{
+        MultiValueMap<String,String> params = new ParamsMultiValueMap();
+
+        params.add("id", errorValues2[0].toString());
+        params.add("title", errorValues2[1].toString());
+        params.add("writter", errorValues2[2].toString());
+        params.add("publisher",errorValues2[3].toString());
+        params.add("price", errorValues2[4].toString());
+
+        HttpHeaders header = new HttpHeaders();
+        header.add("Accept-Language", "ja");
+
+        mockMvc.perform(
+            post("/books/create")
+            .params(params)
+            .headers(header)
+            )
+            .andExpect(status().isOk())
+            .andExpect(view().name("books/list"))
+            .andExpect(content().string(containsString("3 から 2147483647 の間のサイズにしてください")))
+            .andExpect(content().string(containsString("3 から 20 の間のサイズにしてください")))
+            .andExpect(content().string(containsString("0 以上の値にしてください")))
             .andReturn();
     }
 
@@ -157,7 +189,8 @@ public class BookControllerSpringTest {
             .andReturn();
     }
 
-    // TODO books/editにポストする_edit
+
+    // TODO books/editにポストする_edit_正常値
     @Test
     public void  booksEditにpostするEdit() throws Exception{
         //下ごしらえ
@@ -182,6 +215,38 @@ public class BookControllerSpringTest {
             .andReturn();
     }
 
+    // TODO books/editにポストする_edit_異常値
+    @Test
+    public void  booksEditにpostするEdit異常値() throws Exception{
+        //下ごしらえ
+        dbSetup = new DbSetup(dest, insertData1);
+        dbSetup.launch();
+        // データを挿入した
+
+        MultiValueMap<String,String> params = new ParamsMultiValueMap();
+
+        params.add("id", values1[0].toString());
+        params.add("title", errorValues2[1].toString());
+        params.add("writter", errorValues2[2].toString());
+        params.add("publisher",errorValues2[3].toString());
+        params.add("price", errorValues2[4].toString());
+
+        HttpHeaders header = new HttpHeaders();
+        header.add("Accept-Language", "ja");
+
+        mockMvc.perform(
+            post("/books/edit")
+            .params(params)
+            .headers(header)
+            )
+            .andExpect(status().isOk())
+            .andExpect(view().name("books/edit"))
+            .andExpect(content().string(containsString("3 から 2147483647 の間のサイズにしてください")))
+            .andExpect(content().string(containsString("3 から 20 の間のサイズにしてください")))
+            .andExpect(content().string(containsString("0 以上の値にしてください")))
+            .andReturn();
+    }
+        
     // TODO books/deleteにポストする
     @Test
     public void  booksDeleteにpostするDelete() throws Exception{

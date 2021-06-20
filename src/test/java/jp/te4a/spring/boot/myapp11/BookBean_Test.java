@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp10;
+package jp.te4a.spring.boot.myapp11;
 
 import static org.junit.jupiter.api.Assertions.*;
 

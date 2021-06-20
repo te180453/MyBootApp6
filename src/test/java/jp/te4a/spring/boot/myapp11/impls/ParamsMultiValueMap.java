@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp10.impls;
+package jp.te4a.spring.boot.myapp11.impls;
 
 import java.util.*;
 
