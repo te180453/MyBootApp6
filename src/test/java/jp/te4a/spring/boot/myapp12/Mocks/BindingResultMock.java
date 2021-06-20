@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp11.Mocks;
+package jp.te4a.spring.boot.myapp12.Mocks;
 
 import org.springframework.validation.BindingResult;
 

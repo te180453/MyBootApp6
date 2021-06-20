@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp11;
+package jp.te4a.spring.boot.myapp12;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,7 +42,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import jp.te4a.spring.boot.myapp11.impls.ParamsMultiValueMap;
+import jp.te4a.spring.boot.myapp12.impls.ParamsMultiValueMap;
 
 //SpringBootの起動クラスを指定
 @ContextConfiguration(classes = MyBookApp7Application.class)
@@ -73,11 +73,11 @@ public class BookControllerSpringTest {
 
     public final static String[] columns = {"id", "title", "writter", "publisher", "price"};
 
-    public final static Object[] values1 = {1, "タイトル１", "著者１", "出版社１", 100};
+    public final static Object[] errorValues2 = {1, "タ", "著", "出", -1};
 
     public final static Object[] values2 = {2, "タイトル2", "著者2", "出版社2", 200};
 
-    public final static Object[] errorValues2 = {3, "タ", "著", "", -1};
+    public final static Object[] values1 = {3, "東北巡りハンドブック", "東北たろう", "出版社WX", 114514};
 
     public static final Operation insertData1 
         = Operations.insertInto("books")
@@ -119,11 +119,11 @@ public class BookControllerSpringTest {
     public void  booksCreateにpostする正常値() throws Exception{
         MultiValueMap<String,String> params = new ParamsMultiValueMap();
 
-        params.add("id", "1");
-        params.add("title", "testTitle");
-        params.add("writter", "testWritter");
-        params.add("publisher", "testPublisher");
-        params.add("price", "114");
+        params.add("id", values1[0].toString());
+        params.add("title", values1[1].toString());
+        params.add("writter", values1[2].toString());
+        params.add("publisher", values1[3].toString());
+        params.add("price", values1[4].toString());
 
         mockMvc.perform(
             post("/books/create").
@@ -158,6 +158,7 @@ public class BookControllerSpringTest {
             .andExpect(content().string(containsString("3 から 2147483647 の間のサイズにしてください")))
             .andExpect(content().string(containsString("3 から 20 の間のサイズにしてください")))
             .andExpect(content().string(containsString("0 以上の値にしてください")))
+            .andExpect(content().string(containsString("入力は「東北たろう」である必要があります")))
             .andReturn();
     }
 
@@ -172,7 +173,7 @@ public class BookControllerSpringTest {
         MultiValueMap<String,String> params 
             = new ParamsMultiValueMap();
 
-        params.add("id", "1");
+        params.add("id", values1[0].toString());
         params.add("form", null);
 
         mockMvc.perform(
@@ -200,11 +201,11 @@ public class BookControllerSpringTest {
         MultiValueMap<String,String> params 
             = new ParamsMultiValueMap();
 
-        params.add("id", "1");
-        params.add("title", "testTitle");
-        params.add("writter", "testWritter");
-        params.add("publisher", "testPublisher");
-        params.add("price", "114");
+        params.add("id", values1[0].toString());
+        params.add("title", values1[1].toString());
+        params.add("writter", values1[2].toString());
+        params.add("publisher", values1[3].toString());
+        params.add("price", "1919");
 
         mockMvc.perform(
             post("/books/edit").
@@ -257,7 +258,7 @@ public class BookControllerSpringTest {
         MultiValueMap<String,String> params 
             = new ParamsMultiValueMap();
 
-        params.add("id", "1");
+        params.add("id", values1[0].toString());
 
         mockMvc.perform(
             post("/books/delete").

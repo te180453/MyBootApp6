@@ -1,8 +1,8 @@
-package jp.te4a.spring.boot.myapp11.Mocks;
+package jp.te4a.spring.boot.myapp12.Mocks;
 
 import static org.mockito.Mockito.*;
 
-import jp.te4a.spring.boot.myapp11.BookForm;
+import jp.te4a.spring.boot.myapp12.BookForm;
 
 public class BookFormMock {
     public static BookForm create(BookForm testBookForm){

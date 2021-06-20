@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp11.Mocks;
+package jp.te4a.spring.boot.myapp12.Mocks;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
@@ -11,8 +11,8 @@ import java.util.Optional;
 
 import org.mockito.Mock;
 
-import jp.te4a.spring.boot.myapp11.BookBean;
-import jp.te4a.spring.boot.myapp11.BookRepository;
+import jp.te4a.spring.boot.myapp12.BookBean;
+import jp.te4a.spring.boot.myapp12.BookRepository;
 
 public class BookRepositoryMock {
 

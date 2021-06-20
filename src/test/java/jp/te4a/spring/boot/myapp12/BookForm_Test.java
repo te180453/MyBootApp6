@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp11;
+package jp.te4a.spring.boot.myapp12;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -83,7 +83,7 @@ public class BookForm_Test{
             if(e.getPropertyPath().toString().equals("writter"))
                 errorMessages.add(e.getMessage());
         });
-        System.out.println(errorMessages);
+        // System.out.println(errorMessages);
         boolean result = 
             errorMessages.containsAll(Arrays.asList(new String[]{"size must be between 3 and 20"}));
         assertThat(result , is(true));
@@ -112,9 +112,33 @@ public class BookForm_Test{
     }
 
     @Test
-    public void bookFormのwritterにmyself_(){
+    public void bookFormのwritterにmyself_バリューエラー(){
         BookForm bf = new BookForm();
         bf.setWritter("myself");
+        // 1. create validator
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        // 3. validate
+        Set<ConstraintViolation<BookForm>> constraintViolations 
+            = validator
+            .validate(bf);
+        List<String> errorMessages = new ArrayList<String>();
+        constraintViolations.forEach(e -> {
+            if(e.getPropertyPath().toString().equals("writter"))
+                errorMessages.add(e.getMessage());
+        });
+        // System.out.println(constraintViolations);
+        boolean result = 
+            errorMessages.containsAll(
+                Arrays.asList(new String[]{"入力は「東北たろう」である必要があります"})
+                );
+        assertThat(result , is(true));
+    }
+
+    @Test
+    public void bookFormのwritterに東北たろう_エラーなし(){
+        BookForm bf = new BookForm();
+        bf.setWritter("東北たろう");
         // 1. create validator
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();

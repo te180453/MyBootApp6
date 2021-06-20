@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp11;
+package jp.te4a.spring.boot.myapp12;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -11,11 +11,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.validation.BindingResult;
 
-import jp.te4a.spring.boot.myapp11.Mocks.BindingResultMock;
-import jp.te4a.spring.boot.myapp11.Mocks.BookBeanMock;
-import jp.te4a.spring.boot.myapp11.Mocks.BookFormMock;
-import jp.te4a.spring.boot.myapp11.Mocks.BookServiceMock;
-import jp.te4a.spring.boot.myapp11.impls.TestModel;
+import jp.te4a.spring.boot.myapp12.Mocks.BindingResultMock;
+import jp.te4a.spring.boot.myapp12.Mocks.BookBeanMock;
+import jp.te4a.spring.boot.myapp12.Mocks.BookFormMock;
+import jp.te4a.spring.boot.myapp12.Mocks.BookServiceMock;
+import jp.te4a.spring.boot.myapp12.impls.TestModel;
 
 public class BookController_Test {
 
