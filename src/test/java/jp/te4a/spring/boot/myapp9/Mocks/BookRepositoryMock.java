@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp8.Mocks;
+package jp.te4a.spring.boot.myapp9.Mocks;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
@@ -7,11 +7,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.mockito.Mock;
 
-import jp.te4a.spring.boot.myapp8.BookBean;
-import jp.te4a.spring.boot.myapp8.BookRepository;
+import jp.te4a.spring.boot.myapp9.BookBean;
+import jp.te4a.spring.boot.myapp9.BookRepository;
 
 public class BookRepositoryMock {
 
@@ -21,12 +22,10 @@ public class BookRepositoryMock {
         BookBeanMock.create(bb);
         List<BookBean> bbList = new ArrayList<BookBean>();
         bbList.add(bb);
-        when(br.getBookId()).thenReturn(1);
+        Optional<BookBean> optbb = Optional.ofNullable(bb);
         when(br.save((BookBean)anyObject())).thenReturn(bb);
         when(br.findAll()).thenReturn(bbList);
-        when(br.create(bb)).thenReturn(bb);
-        when(br.update(bb)).thenReturn(bb);
-        when(br.findOne(1)).thenReturn(bb);
+        when(br.findById(anyInt())).thenReturn(optbb);
         return br;
     }
 }

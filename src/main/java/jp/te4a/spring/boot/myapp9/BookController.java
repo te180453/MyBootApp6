@@ -44,6 +44,7 @@ public class BookController {
 
     @PostMapping(path = "edit")
     String edit(@RequestParam Integer id, BookForm form) {
+        System.out.println(form);
         bookService.update(form);
         return "redirect:/books";
     }

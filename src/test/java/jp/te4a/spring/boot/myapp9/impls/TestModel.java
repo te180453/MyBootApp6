@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp8.impls;
+package jp.te4a.spring.boot.myapp9.impls;
 
 import java.util.Collection;
 import java.util.HashMap;

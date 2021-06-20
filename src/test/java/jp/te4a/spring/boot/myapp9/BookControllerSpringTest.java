@@ -1,4 +1,4 @@
-package jp.te4a.spring.boot.myapp8;
+package jp.te4a.spring.boot.myapp9;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,7 +15,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
+import com.ninja_squad.dbsetup.DbSetup;
+import com.ninja_squad.dbsetup.Operations;
+import com.ninja_squad.dbsetup.destination.DataSourceDestination;
+import com.ninja_squad.dbsetup.destination.Destination;
+import com.ninja_squad.dbsetup.operation.Operation;
+
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -31,7 +40,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
-import jp.te4a.spring.boot.myapp8.impls.ParamsMultiValueMap;
+import jp.te4a.spring.boot.myapp9.impls.ParamsMultiValueMap;
 
 //SpringBootの起動クラスを指定
 @ContextConfiguration(classes = MyBookApp7Application.class)
@@ -52,15 +61,47 @@ public class BookControllerSpringTest {
     MockMvc mockMvc;
     @Autowired
     WebApplicationContext wac;
+    @Autowired
+    private DataSource dataSource;
+
+    Destination dest;
+
+    DbSetup dbSetup;
+
+    public final static String[] columns = {"id", "title", "writter", "publisher", "price"};
+
+    public final static Object[] values1 = {1, "タイトル１", "著者１", "出版社１", 100};
+
+    public final static Object[] values2 = {2, "タイトル2", "著者2", "出版社2", 200};
+
+    public static final Operation insertData1 
+        = Operations.insertInto("books")
+        .columns(columns)
+        .values(values1).build();
+
+    public static final Operation insertData2
+        = Operations.insertInto("books")
+        .columns(columns)
+        .values(values2).build();
     
+    public static final Operation deleteRecords
+        = Operations.deleteAllFrom("books");
+
     @BeforeAll
     public void テスト前処理(){
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
+    @BeforeEach
+    public void each(){
+       dest = new DataSourceDestination(dataSource);
+       dbSetup = new DbSetup(dest, deleteRecords);
+       dbSetup.launch();
+    }
+
     // booksにget
     @Test
-    public void indexにアクセス() throws Exception{
+    public void booksにアクセス() throws Exception{
         mockMvc.perform(get("/books"))
         .andExpect(status().is2xxSuccessful())
         .andExpect(view().name("books/list"))
@@ -70,7 +111,7 @@ public class BookControllerSpringTest {
 
     // TODO books/createにpost
     @Test
-    public void  booksにpostする() throws Exception{
+    public void  booksCreateにpostする() throws Exception{
         MultiValueMap<String,String> params = new ParamsMultiValueMap();
 
         params.add("id", "1");
@@ -89,13 +130,78 @@ public class BookControllerSpringTest {
     }
 
     // TODO books/editにポストする_editForm
-    // FIXME bookMapのモックできないからできない？
+    @Test
+    public void  booksEditにpostする() throws Exception{
+        //下ごしらえ
+        dbSetup = new DbSetup(dest, insertData1);
+        dbSetup.launch();
+        // データを挿入した
+
+        MultiValueMap<String,String> params 
+            = new ParamsMultiValueMap();
+
+        params.add("id", "1");
+        params.add("form", null);
+
+        mockMvc.perform(
+            post("/books/edit").
+            params(params)
+            )
+            .andExpect(status().isOk())
+            .andExpect(view().name("books/edit"))
+            .andExpect(content().string(containsString(values1[0].toString())))
+            .andExpect(content().string(containsString(values1[1].toString())))
+            .andExpect(content().string(containsString(values1[2].toString())))
+            .andExpect(content().string(containsString(values1[3].toString())))
+            .andExpect(content().string(containsString(values1[4].toString())))
+            .andReturn();
+    }
 
     // TODO books/editにポストする_edit
-    // FIXME bookMapのモックできないからできない？
+    @Test
+    public void  booksEditにpostするEdit() throws Exception{
+        //下ごしらえ
+        dbSetup = new DbSetup(dest, insertData1);
+        dbSetup.launch();
+        // データを挿入した
+        MultiValueMap<String,String> params 
+            = new ParamsMultiValueMap();
+
+        params.add("id", "1");
+        params.add("title", "testTitle");
+        params.add("writter", "testWritter");
+        params.add("publisher", "testPublisher");
+        params.add("price", "114");
+
+        mockMvc.perform(
+            post("/books/edit").
+            params(params)
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/books"))
+            .andReturn();
+    }
 
     // TODO books/deleteにポストする
-    // FIXME bookMapのモックできないからできない？
+    @Test
+    public void  booksDeleteにpostするDelete() throws Exception{
+        //下ごしらえ
+        dbSetup = new DbSetup(dest, insertData1);
+        dbSetup.launch();
+        // データを挿入した
+        MultiValueMap<String,String> params 
+            = new ParamsMultiValueMap();
+
+        params.add("id", "1");
+
+        mockMvc.perform(
+            post("/books/delete").
+            params(params)
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/books"))
+            .andReturn();
+    }
 
     // TODO books/editにポストすする_goToTop
     @Test
