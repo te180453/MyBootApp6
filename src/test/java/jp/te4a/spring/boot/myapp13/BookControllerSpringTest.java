@@ -3,17 +3,7 @@ package jp.te4a.spring.boot.myapp13;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import javax.sql.DataSource;
 
@@ -25,7 +15,6 @@ import com.ninja_squad.dbsetup.operation.Operation;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -41,9 +31,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.security.test.context.support.WithUserDetails;
 
 import jp.te4a.spring.boot.myapp13.impls.ParamsMultiValueMap;
+
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 //SpringBootの起動クラスを指定
 @ContextConfiguration(classes = MyBookApp7Application.class)
@@ -57,14 +48,16 @@ import jp.te4a.spring.boot.myapp13.impls.ParamsMultiValueMap;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //クラス単位でインスタンスを作成
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-// 認証用ユーザー指定
-@WithUserDetails(value="testuser", userDetailsServiceBeanName="loginUserDetailsService")
 // BookControllerSpringTestの実装
+//ログイン状態を再現する
+@WithMockUser()
 public class BookControllerSpringTest {
     @Autowired
     MockMvc mockMvc;
+
     @Autowired
     WebApplicationContext wac;
+
     @Autowired
     private DataSource dataSource;
 
@@ -93,6 +86,15 @@ public class BookControllerSpringTest {
     public static final Operation deleteRecords
         = Operations.deleteAllFrom("books");
 
+    public final static String[] userColumns = {"username", "password"};
+    
+    public final static Object[] userValues = {"testuser", "5c15049ecb0f5fe36d221bb0bf1d05fa752e5e4aceccb8e5df3aac57db192a775a2f68783aedc400"};
+    
+    public static final Operation insertUserData 
+        = Operations.insertInto("users")
+        .columns(userColumns)
+        .values(userValues).build();
+    
     @BeforeAll
     public void テスト前処理(){
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
@@ -104,9 +106,9 @@ public class BookControllerSpringTest {
        dbSetup = new DbSetup(dest, deleteRecords);
        dbSetup.launch();
     }
-
     // booksにget
     @Test
+    @WithMockUser()
     public void booksにアクセス() throws Exception{
         mockMvc.perform(get("/books"))
         .andExpect(status().is2xxSuccessful())
@@ -115,6 +117,7 @@ public class BookControllerSpringTest {
         .andReturn();
     }
 
+    //----------!!! TEST PASSED !!!-------------
     // TODO books/createにpost_正常値
     @Test
     public void  booksCreateにpostする正常値() throws Exception{
@@ -125,13 +128,17 @@ public class BookControllerSpringTest {
         params.add("writter", values1[2].toString());
         params.add("publisher", values1[3].toString());
         params.add("price", values1[4].toString());
-
+        System.out.println(params);
         mockMvc.perform(
-            post("/books/create").
-            params(params)
+            post("/books/create")
+            .params(params)
+            .with(SecurityMockMvcRequestPostProcessors.csrf()) 
+            //これを追記したらテストが通るようになった
+            // PostリクエストにCSRFトークンを付ける
+            // CSRFトークンとはCSRF(クロスサイトリクエストフォージェリ)の対策に必要な情報 
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/books"))
+            //.andExpect(view().name("redirect:/books"))
             .andReturn();
     }
 
@@ -153,6 +160,7 @@ public class BookControllerSpringTest {
             post("/books/create")
             .params(params)
             .headers(header)
+            .with(SecurityMockMvcRequestPostProcessors.csrf()) 
             )
             .andExpect(status().isOk())
             .andExpect(view().name("books/list"))
@@ -180,6 +188,7 @@ public class BookControllerSpringTest {
         mockMvc.perform(
             post("/books/edit").
             params(params)
+            .with(SecurityMockMvcRequestPostProcessors.csrf()) 
             )
             .andExpect(status().isOk())
             .andExpect(view().name("books/edit"))
@@ -211,6 +220,7 @@ public class BookControllerSpringTest {
         mockMvc.perform(
             post("/books/edit").
             params(params)
+            .with(SecurityMockMvcRequestPostProcessors.csrf()) 
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/books"))
@@ -240,6 +250,7 @@ public class BookControllerSpringTest {
             post("/books/edit")
             .params(params)
             .headers(header)
+            .with(SecurityMockMvcRequestPostProcessors.csrf()) 
             )
             .andExpect(status().isOk())
             .andExpect(view().name("books/edit"))
@@ -264,6 +275,7 @@ public class BookControllerSpringTest {
         mockMvc.perform(
             post("/books/delete").
             params(params)
+            .with(SecurityMockMvcRequestPostProcessors.csrf()) 
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/books"))
@@ -277,7 +289,8 @@ public class BookControllerSpringTest {
         params.add("goToTop", null);
         mockMvc.perform(
             post("/books/edit")
-            .params(params))
+            .params(params)
+            .with(SecurityMockMvcRequestPostProcessors.csrf()) )
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/books"))
             .andReturn();

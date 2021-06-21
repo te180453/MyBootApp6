@@ -13,6 +13,7 @@ public class UserService {
     UserRepository userRepository;
 
     public UserForm create(UserForm userForm){
+        System.out.println(new Pbkdf2PasswordEncoder().encode(userForm.getPassword()));
         userForm.setPassword(new Pbkdf2PasswordEncoder().encode(userForm.getPassword()));
         UserBean userBean= new UserBean();
         BeanUtils.copyProperties(userForm, userBean);
