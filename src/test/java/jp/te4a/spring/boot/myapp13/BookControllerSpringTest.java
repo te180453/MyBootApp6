@@ -1,6 +1,7 @@
 package jp.te4a.spring.boot.myapp13;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -13,8 +14,10 @@ import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.destination.Destination;
 import com.ninja_squad.dbsetup.operation.Operation;
 
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,17 +25,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import jp.te4a.spring.boot.myapp13.impls.ParamsMultiValueMap;
+import jp.te4a.spring.boot.myapp13.repository.UserRepository;
 
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
@@ -61,6 +68,9 @@ public class BookControllerSpringTest {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private UserRepository userRepository;
+
     Destination dest;
 
     DbSetup dbSetup;
@@ -88,7 +98,7 @@ public class BookControllerSpringTest {
 
     public final static String[] userColumns = {"username", "password"};
     
-    public final static Object[] userValues = {"testuser", "5c15049ecb0f5fe36d221bb0bf1d05fa752e5e4aceccb8e5df3aac57db192a775a2f68783aedc400"};
+    public static Object[] userValues = {"testuser", "ここの内容はハッシュ化したパスワードを入れる"};
     
     public static final Operation insertUserData 
         = Operations.insertInto("users")
@@ -103,9 +113,84 @@ public class BookControllerSpringTest {
     @BeforeEach
     public void each(){
        dest = new DataSourceDestination(dataSource);
-       dbSetup = new DbSetup(dest, deleteRecords);
-       dbSetup.launch();
+       new DbSetup(dest, deleteRecords).launch();
+       new DbSetup(dest, 
+        Operations.deleteAllFrom("users")
+        ).launch();
     }
+
+    //create user test
+    @Test
+    public void users_createにアクセス() throws Exception{
+        mockMvc.perform(
+            post("/users/create")
+            .param("username","testuser")
+            .param("password", "password")
+            .with(SecurityMockMvcRequestPostProcessors.csrf())
+            )
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/users"))
+        .andDo(new ResultHandler(){
+            public void handle(MvcResult result) throws Exception {
+                assertThat(
+                    userRepository.findById("testuser").isPresent(), 
+                    is(true)
+                );
+            }
+        })
+        .andReturn();
+    }
+
+    // login test
+    @Test
+    public void loginにアクセス() throws Exception{
+        new DbSetup(
+            new DataSourceDestination(dataSource),
+            Operations.insertInto("users")
+            .columns("username","password")
+            .values("testuser", new Pbkdf2PasswordEncoder().encode("password"))
+            .build()
+        ).launch();
+        System.out.println(userRepository.findAll());
+        ResultHandler handler = new ResultHandler(){
+            @Override
+            public void handle(MvcResult result) throws Exception {
+                System.out.println("### : " + result.getResponse().getRedirectedUrl());
+            }
+        };
+
+        mockMvc.perform(
+            post("/login")
+            .param("username","testuser")
+            .param("password", "password")
+            .with(SecurityMockMvcRequestPostProcessors.csrf())
+            )
+        .andDo(handler)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/books"))
+        .andReturn();
+    }
+    // logoutにアクセス
+    @Test
+    public void logoutにアクセス() throws Exception{
+        mockMvc.perform(
+            post("/logout")
+            .with(SecurityMockMvcRequestPostProcessors.csrf())    
+        )
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/loginForm"))
+        .andReturn();
+    }
+    // loginFormにアクセス
+    @Test
+    public void loginFormにアクセス() throws Exception{
+        mockMvc.perform(get("/loginForm"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("ログインフォーム")))
+        .andExpect(content().string(containsString("書籍管理システム")))
+        .andReturn();
+    }
+
     // booksにget
     @Test
     @WithMockUser()
@@ -117,8 +202,10 @@ public class BookControllerSpringTest {
         .andReturn();
     }
 
+
+
     //----------!!! TEST PASSED !!!-------------
-    // TODO books/createにpost_正常値
+    // books/createにpost_正常値
     @Test
     public void  booksCreateにpostする正常値() throws Exception{
         MultiValueMap<String,String> params = new ParamsMultiValueMap();
@@ -142,7 +229,7 @@ public class BookControllerSpringTest {
             .andReturn();
     }
 
-    // TODO books/createにpost_異常値
+    // books/createにpost_異常値
     @Test
     public void  booksCreateにpostする異常値() throws Exception{
         MultiValueMap<String,String> params = new ParamsMultiValueMap();
@@ -171,7 +258,7 @@ public class BookControllerSpringTest {
             .andReturn();
     }
 
-    // TODO books/editにポストする_editForm
+    // books/editにポストする_editForm
     @Test
     public void  booksEditにpostする() throws Exception{
         //下ごしらえ
@@ -201,7 +288,7 @@ public class BookControllerSpringTest {
     }
 
 
-    // TODO books/editにポストする_edit_正常値
+    // books/editにポストする_edit_正常値
     @Test
     public void  booksEditにpostするEdit() throws Exception{
         //下ごしらえ
@@ -227,7 +314,7 @@ public class BookControllerSpringTest {
             .andReturn();
     }
 
-    // TODO books/editにポストする_edit_異常値
+    // books/editにポストする_edit_異常値
     @Test
     public void  booksEditにpostするEdit異常値() throws Exception{
         //下ごしらえ
@@ -260,7 +347,7 @@ public class BookControllerSpringTest {
             .andReturn();
     }
         
-    // TODO books/deleteにポストする
+    // books/deleteにポストする
     @Test
     public void  booksDeleteにpostするDelete() throws Exception{
         //下ごしらえ
@@ -282,7 +369,7 @@ public class BookControllerSpringTest {
             .andReturn();
     }
 
-    // TODO books/editにポストすする_goToTop
+    // books/editにポストすする_goToTop
     @Test
     public void  books_editにポストする() throws Exception{
         MultiValueMap<String,String> params = new ParamsMultiValueMap();
